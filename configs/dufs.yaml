@@ -1,0 +1,74 @@
+# 指定绑定地址或unix套接字
+# bind: 0.0.0.0
+
+# 指定路径前缀
+# path-prefix: 'dufs'
+
+# 服务器根目录
+serve-path: '/data'
+
+# 设置自定义前端目录的路径，用于覆盖内置前端
+assets: '/dufs/assets'
+
+# 指定监听端口 [默认: 5000]
+port: 80
+
+# 目录列表中隐藏路径，例如 tmp,*.log,*.lock
+hidden:
+  - 'logs'
+
+# 添加认证角色
+auth:
+  - dustin:dustin@/:rw
+  - lxl:lxl@/lxl:rw
+  - lkt:lkt@/lkt:rw
+  - jmt:jmt@/jmt:rw
+  - '@/'
+
+# 自定义HTTP日志格式
+log-format: '$remote_addr "$request" $status $http_user_agent'
+
+# 指定保存日志的文件，而不是stdout/stderr
+log-file: '/data/logs/dufs.log'
+
+# 允许所有操作
+allow-all: false
+
+# 允许上传文件/文件夹
+allow-upload: true
+
+# 允许删除文件/文件夹
+allow-delete: true
+
+# 允许搜索文件/文件夹
+allow-search: true
+
+# 允许链接到根目录外的文件/文件夹
+allow-symlink: true
+
+# 允许生成zip归档
+allow-archive: true
+
+# 设置zip压缩级别 [默认: low] [可能的值: none, low, medium, high]
+compress: low
+
+# 为<shell>打印shell补全脚本 [可能的值: bash, elvish, fish, powershell, zsh]
+# completions: bash
+
+# 启用CORS，设置 `Access-Control-Allow-Origin: *`
+enable-cors: true
+
+# 请求目录时提供index.html，如果未找到index.html则返回404
+render-index: true
+
+# 请求目录时提供index.html，如果未找到index.html则返回目录列表
+render-try-index: true
+
+# 服务单页应用程序(SPA)
+render-spa: true
+
+# 用于HTTPS的SSL/TLS证书路径
+# tls-cert: '/dufs/cert.pem'
+
+# SSL/TLS证书私钥的路径
+# tls-key: '/dufs/key_pkcs1.pem'
