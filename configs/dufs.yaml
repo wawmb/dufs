@@ -20,8 +20,6 @@ hidden:
 # 添加认证角色
 auth:
   - dustin:dustin@/:rw
-  - lxl:lxl@/lxl:rw
-  - lkt:lkt@/lkt:rw
   - jmt:jmt@/jmt:rw
   - '@/'
 
