@@ -48,3 +48,23 @@ docker run \
     -v  /data/xspeed/share:/data \
     wawmb/dufs:latest
 ```
+
+# 编译 Dufs 执行文件
+
+本项目是构建 Dufs 的执行文件。
+
+1、设置默认 Rust 工具链
+
+```
+rustup default stable
+rustup target add x86_64-unknown-linux-musl
+```
+
+2、任何 x86_64 Linux 上运行（包括 Alpine）静态编译
+
+```
+RUSTFLAGS='-C target-feature=+crt-static' \
+cargo build --release \
+  --target x86_64-unknown-linux-musl \
+  --target-dir ./build/
+```
