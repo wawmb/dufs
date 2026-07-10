@@ -1,0 +1,23 @@
+{
+  "default": {},
+  "users": {
+    "dustin": {
+      "activeTheme": "theme2",
+      "pageTitle": "Dustin's file share",
+      "themes": {
+        "theme1": {
+          "accentColor": "#f7a8c4",
+          "fileNameColor": "#121822",
+          "panelBlur": 1,
+          "panelOpacity": 0.5
+        },
+        "theme2": {
+          "accentColor": "#f7a8c4",
+          "fileNameColor": "#121822",
+          "panelBlur": 1,
+          "panelOpacity": 0.5
+        }
+      }
+    }
+  }
+}

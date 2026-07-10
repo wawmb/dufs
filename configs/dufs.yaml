@@ -5,29 +5,38 @@
 # path-prefix: 'dufs'
 
 # 服务器根目录
+# serve-path: '/data/xspeed/share'
 serve-path: '/data'
 
 # 设置自定义前端目录的路径，用于覆盖内置前端
+# assets: '/data/xspeed/myself/dufs/assets'
 assets: '/dufs/assets'
 
 # 指定监听端口 [默认: 5000]
 port: 80
 
+# 指定保存日志的文件，而不是stdout/stderr
+log-file: '/data/logs/dufs.log'
+
 # 目录列表中隐藏路径，例如 tmp,*.log,*.lock
 hidden:
   - 'logs'
 
+# 添加设置功能认证角色
+ui-settings-users:
+  - dustin
+  - lycan
+
 # 添加认证角色
 auth:
   - dustin:dustin@/:rw
+  - lycan:wzm@/:rw
   - jmt:jmt@/jmt:rw
+  - admin:admin@/temps:rw
   - '@/'
 
 # 自定义HTTP日志格式
 log-format: '$remote_addr "$request" $status $http_user_agent'
-
-# 指定保存日志的文件，而不是stdout/stderr
-log-file: '/data/logs/dufs.log'
 
 # 允许所有操作
 allow-all: false
