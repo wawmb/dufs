@@ -1,41 +1,116 @@
 <!doctype html>
-<html>
+<html lang="zh-CN">
 
 <head>
     <meta charset="utf-8">
-    <link href="__ASSETS_PREFIX__favicon.ico" rel="icon" type="image/x-icon">
+    <noscript><meta content="0;url=?noscript" http-equiv="refresh"></noscript>
+    <link href="__ASSETS_PREFIX__favicon.ico?v=0.47.0-16" rel="icon" type="image/x-icon">
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
-    <title>dufs</title>
-    <script crossorigin src="__ASSETS_PREFIX__index.js" type="module"></script>
-    <link href="__ASSETS_PREFIX__index.css" rel="stylesheet" crossorigin>
-    <script defer src="__ASSETS_PREFIX__custom-settings.js"></script>
+    <meta name="theme-color" content="#0288d1">
+    <title>Dustin's file share</title>
+    <script>
+        /* Dustin appearance bootstrap — must run before the Vuetify module */
+        (function () {
+            var STORAGE_KEY = "dufs-appearance-v2";
+            var THEMES = {
+                theme1: {
+                    name: "深海蓝",
+                    light: { primary: "#0288d1", secondary: "#00b0ff" },
+                    dark: { primary: "#26a8e8", secondary: "#4fc3f7" },
+                    gradient: ["#0b1e3a", "#12456e", "#0f6e8c"],
+                    defaults: { panelAlpha: 0.62, panelBlur: 14, bgAlpha: 0.42 }
+                },
+                theme2: {
+                    name: "暮樱粉",
+                    light: { primary: "#c2527c", secondary: "#f0997b" },
+                    dark: { primary: "#ed93b1", secondary: "#f5b7a4" },
+                    gradient: ["#241226", "#5c2547", "#a04a6b"],
+                    defaults: { panelAlpha: 0.72, panelBlur: 20, bgAlpha: 0.5 }
+                }
+            };
+            var DEFAULTS = {
+                theme: "theme1",
+                effect: "auto",
+                background: "random"
+            };
+            var saved = {};
+            try {
+                saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") || {};
+            } catch (e) { /* ignore broken storage */ }
+            var settings = Object.assign({}, DEFAULTS, saved);
+            if (!THEMES[settings.theme]) settings.theme = "theme1";
+
+            /* Each theme keeps its own transparency / blur / shade values */
+            var legacy = !saved.perTheme;
+            settings.perTheme = settings.perTheme || {};
+            Object.keys(THEMES).forEach(function (id) {
+                var value = Object.assign({}, THEMES[id].defaults, settings.perTheme[id] || {});
+                /* Migrate the old flat settings into the active theme */
+                if (legacy && id === settings.theme) {
+                    if (saved.panelAlpha != null) value.panelAlpha = saved.panelAlpha;
+                    if (saved.panelBlur != null) value.panelBlur = saved.panelBlur;
+                    if (saved.bgAlpha != null) value.bgAlpha = saved.bgAlpha;
+                }
+                settings.perTheme[id] = value;
+            });
+
+            /* Fresh random wallpaper on every visit; other preferences stay saved */
+            settings.bgSeed = Math.random().toString(36).slice(2);
+
+            window.__DUFS_APPEARANCE__ = {
+                storageKey: STORAGE_KEY,
+                themes: THEMES,
+                settings: settings
+            };
+
+            window.__DUFS_MATERIAL_CONFIG__ = {
+                document: "Path of ${path} - Dustin's file share",
+                page: { title: "Dustin's file share" },
+                /* No footer config; material-assets also hardcodes a "Powered by ..." line.
+                   The whole <footer> is hidden in custom-effects.css. */
+                theme: { light: THEMES[settings.theme].light, dark: THEMES[settings.theme].dark },
+                limit: 200,
+                preferPreview: true,
+                externalViewer: false,
+                jxlPolyfill: false,
+                codeHighlightMaxLines: 3000,
+                codeHighlightMaxLineLength: 2000
+            };
+
+            /* Prefix used by the SPA router and by our own asset lookups */
+            window.__DUFS_PREFIX__ = "__ASSETS_PREFIX__";
+
+            /* ?edit / ?view return EditData (no paths[]) — redirect before the SPA mounts */
+            try {
+                var url = new URL(window.location.href);
+                if (url.searchParams.has("edit") || url.searchParams.has("view")) {
+                    url.searchParams.delete("edit");
+                    url.searchParams.delete("view");
+                    window.location.replace(url.toString());
+                }
+            } catch (e) { /* old browser: the fallback below still guards */ }
+        })();
+    </script>
+    <script crossorigin src="__ASSETS_PREFIX__assets/index-5nhfgnpj.js" type="module"></script>
+    <link href="__ASSETS_PREFIX__assets/index-DtPsJziG.css" rel="stylesheet" crossorigin>
+    <link href="__ASSETS_PREFIX__custom-effects.css?v=0.47.0-16" rel="stylesheet">
+    <script defer src="__ASSETS_PREFIX__custom-settings.js?v=0.47.0-16"></script>
 </head>
 
 <body>
     <div id="app"></div>
     <script>
-        window.__CUSTOM_DOCUMENT_TITLE__ = "Path of ${path} - Dustin's file share";
-        window.__CUSTOM_PAGE_TITLE__ = "Dustin's file share";
-        window.__CUSTOM_THEME__ = {
-            light: {
-                primary: '#0288d1',
-                secondary: '#00b0ff',
-            },
-            dark: {
-                primary: '#026da7',
-                secondary: '#008dcc',
-            },
-        };
-        window.__INITIAL_DATA__ = JSON.parse(decodeURIComponent(escape(atob("__INDEX_DATA__"))));
-        window.__DUFS_INITIAL_DATA__ = window.__INITIAL_DATA__;
-        window.__DUFS_ALLOW_UI_SETTINGS__ = Boolean(window.__INITIAL_DATA__.allow_ui_settings);
-        window.__DUFS_PREFIX__ = "__ASSETS_PREFIX__";
-        window.__CUSTOM_UI_SETTINGS_URL__ = "__UI_SETTINGS_ROUTE__";
-        window.__CUSTOM_BACKGROUND_URL__ = `https://www.dmoe.cc/random.php?_dufs_bg=${Date.now()}_${Math.random().toString(36).slice(2)}`;
-        document.head.insertAdjacentHTML(
-            "beforeend",
-            `<style>.v-application{background-image:url("${window.__CUSTOM_BACKGROUND_URL__}") !important;}</style>`
+        window.__INITIAL_DATA__ = JSON.parse(
+            (function (value) {
+                return Uint8Array.fromBase64
+                    ? new TextDecoder().decode(Uint8Array.fromBase64(value))
+                    : decodeURIComponent(escape(atob(value)));
+            })("__INDEX_DATA__")
         );
+        /* Guard for direct ?edit / ?view links on browsers that ignored the redirect */
+        if (!Array.isArray(window.__INITIAL_DATA__.paths)) {
+            window.__INITIAL_DATA__.paths = [];
+        }
     </script>
 </body>
 

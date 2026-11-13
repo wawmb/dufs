@@ -36,9 +36,7 @@ docker push wawmb/dufs:latest
 ```
 docker pull wawmb/dufs:latest
 
-docker stop dufs
-
-docker rm dufs
+docker stop dufs && docker rm dufs
 
 docker run \
     -d --name dufs \
@@ -56,6 +54,7 @@ docker run \
 1、设置默认 Rust 工具链
 
 ```
+cd source
 rustup default stable
 rustup target add x86_64-unknown-linux-musl
 ```
@@ -63,8 +62,6 @@ rustup target add x86_64-unknown-linux-musl
 2、任何 x86_64 Linux 上运行（包括 Alpine）静态编译
 
 ```
-RUSTFLAGS='-C target-feature=+crt-static' \
-cargo build --release \
-  --target x86_64-unknown-linux-musl \
-  --target-dir ./build/
+cargo build --release --locked \
+  --target x86_64-unknown-linux-musl
 ```

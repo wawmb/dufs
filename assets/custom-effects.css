@@ -1,0 +1,459 @@
+/* Dustin appearance layer — sits on top of dufs-material-assets */
+
+:root {
+    --dufs-panel-alpha: 0.62;
+    --dufs-panel-blur: 14px;
+    --dufs-bg-alpha: 0.42;
+    --dufs-ink: rgb(var(--v-theme-on-surface, 18, 24, 34));
+    --dufs-surface: rgb(var(--v-theme-surface, 255, 255, 255));
+    --dufs-primary: rgb(var(--dufs-primary-rgb, 2, 136, 209));
+    --dufs-radius: 16px;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+/* Background image is injected by custom-settings.js into #dufs-bg-style */
+.v-application {
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+
+/* material-assets hardcodes a "Powered by dufs v... & dufs-material-assets" line
+   into this footer even when no footer is configured — hide the whole element. */
+.v-application > footer.text-center,
+footer.text-body-small.text-grey.text-center.mb-8 {
+    display: none !important;
+}
+
+.v-application .v-card,
+.v-application .v-table>.v-table__wrapper {
+    background-color: color-mix(in srgb, var(--dufs-surface) calc(var(--dufs-panel-alpha) * 100%), transparent) !important;
+    backdrop-filter: blur(var(--dufs-panel-blur));
+    -webkit-backdrop-filter: blur(var(--dufs-panel-blur));
+    border: 1px solid color-mix(in srgb, var(--dufs-ink) 8%, transparent);
+}
+
+.v-application .v-app-bar {
+    background-color: color-mix(in srgb, var(--dufs-primary) calc(var(--dufs-panel-alpha) * 100%), transparent) !important;
+    backdrop-filter: blur(var(--dufs-panel-blur));
+    -webkit-backdrop-filter: blur(var(--dufs-panel-blur));
+}
+
+.v-application .v-table>.v-table__wrapper>table th {
+    background-color: color-mix(in srgb, var(--dufs-surface) calc(var(--dufs-panel-alpha) * 65%), transparent) !important;
+}
+
+#dufs-weather {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 1;
+}
+
+#dufs-weather[hidden] {
+    display: none;
+}
+
+/* Theme switch + settings gear share one group in the top app bar */
+#dufs-topbar-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Fallback: stay pinned to the top edge if the app bar is not mounted */
+#dufs-topbar-controls.dufs-topbar--floating {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    z-index: 2602;
+    padding: 4px;
+    border-radius: 999px;
+    color: var(--dufs-ink);
+    background: color-mix(in srgb, var(--dufs-surface) 82%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+#dufs-topbar-controls.dufs-topbar--floating #dufs-theme-switch,
+#dufs-topbar-controls.dufs-topbar--floating #dufs-appearance-toggle {
+    background: color-mix(in srgb, var(--dufs-surface) 60%, transparent);
+    border-color: color-mix(in srgb, var(--dufs-ink) 18%, transparent);
+    color: var(--dufs-ink);
+}
+
+/* The app bar itself is primary-colored, so use translucent white pills */
+#dufs-theme-switch,
+#dufs-appearance-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    border: 1px solid rgba(255, 255, 255, .34);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: inherit;
+    cursor: pointer;
+    transition: background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+#dufs-theme-switch:hover,
+#dufs-appearance-toggle:hover {
+    background: rgba(255, 255, 255, .26);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(10, 20, 40, .16);
+}
+
+#dufs-theme-switch:focus-visible,
+#dufs-appearance-toggle:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+#dufs-theme-switch {
+    gap: 6px;
+    padding: 0 11px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+#dufs-appearance-toggle {
+    width: 34px;
+    padding: 0;
+    flex: none;
+}
+
+#dufs-appearance-toggle:hover {
+    transform: rotate(28deg);
+}
+
+#dufs-appearance-toggle svg {
+    width: 19px;
+    height: 19px;
+    fill: currentColor;
+}
+
+.dufs-switch-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex: none;
+    opacity: .45;
+    transform: scale(.8);
+    transition: opacity .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.dufs-switch-dot.is-active {
+    opacity: 1;
+    transform: scale(1.15);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, .6);
+}
+
+.dufs-switch-label {
+    letter-spacing: .2px;
+}
+
+/* Settings panel */
+#dufs-appearance-panel {
+    position: fixed;
+    right: 20px;
+    top: 64px;
+    z-index: 2600;
+    width: 330px;
+    max-width: calc(100vw - 32px);
+    max-height: min(78vh, 660px);
+    overflow-y: auto;
+    padding: 20px;
+    border-radius: var(--dufs-radius);
+    border: 1px solid color-mix(in srgb, var(--dufs-ink) 12%, transparent);
+    background: color-mix(in srgb, var(--dufs-surface) 88%, transparent);
+    backdrop-filter: blur(26px) saturate(140%);
+    -webkit-backdrop-filter: blur(26px) saturate(140%);
+    box-shadow: 0 24px 70px rgba(10, 20, 40, .26);
+    color: var(--dufs-ink);
+    font: 13px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+#dufs-appearance-panel[hidden] {
+    display: none;
+}
+
+.dufs-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.dufs-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: .2px;
+}
+
+.dufs-sub {
+    font-size: 11px;
+    opacity: .62;
+    margin-bottom: 16px;
+}
+
+.dufs-close {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: .55;
+    padding: 2px 6px;
+}
+
+.dufs-close:hover {
+    opacity: 1;
+}
+
+.dufs-group {
+    margin-top: 16px;
+}
+
+.dufs-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.dufs-label small {
+    font-weight: 400;
+    opacity: .6;
+    font-variant-numeric: tabular-nums;
+}
+
+.dufs-seg {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dufs-seg button {
+    flex: 1 1 auto;
+    min-width: 62px;
+    padding: 7px 9px;
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--dufs-ink) 14%, transparent);
+    background: color-mix(in srgb, var(--dufs-surface) 60%, transparent);
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .18s ease;
+}
+
+.dufs-seg button:hover {
+    border-color: var(--dufs-primary);
+}
+
+.dufs-seg button[aria-pressed="true"] {
+    background: var(--dufs-primary);
+    border-color: var(--dufs-primary);
+    color: #fff;
+}
+
+.dufs-theme-btn {
+    flex: 1 1 44% !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
+}
+
+.dufs-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .45);
+}
+
+.dufs-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.dufs-row input[type="range"] {
+    flex: 1;
+    width: 100%;
+    accent-color: var(--dufs-primary);
+    cursor: pointer;
+}
+
+.dufs-value {
+    width: 44px;
+    text-align: right;
+    font-size: 11px;
+    opacity: .68;
+    font-variant-numeric: tabular-nums;
+}
+
+.dufs-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid color-mix(in srgb, var(--dufs-ink) 10%, transparent);
+}
+
+.dufs-actions button {
+    flex: 1;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--dufs-ink) 14%, transparent);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.dufs-actions button:hover {
+    border-color: var(--dufs-primary);
+    color: var(--dufs-primary);
+}
+
+.dufs-hint {
+    margin-top: 12px;
+    font-size: 11px;
+    opacity: .55;
+}
+
+@media (max-width: 600px) {
+    #dufs-appearance-panel {
+        right: 12px;
+        left: 12px;
+        top: 58px;
+        width: auto;
+        max-height: 70vh;
+    }
+    #dufs-theme-switch,
+    #dufs-appearance-toggle {
+        height: 30px;
+    }
+    #dufs-appearance-toggle {
+        width: 30px;
+    }
+    #dufs-theme-switch {
+        padding: 0 9px;
+    }
+    #dufs-theme-switch .dufs-switch-label {
+        display: none;
+    }
+    .v-application {
+        background-attachment: scroll !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #dufs-appearance-toggle,
+    #dufs-theme-switch,
+    .dufs-switch-dot {
+        transition: none;
+    }
+}
+
+/* Effect quick-switch, toast and click feedback */
+#dufs-effect-switch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 11px;
+    border: 1px solid rgba(255, 255, 255, .34);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: inherit;
+    cursor: pointer;
+    font: 500 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    white-space: nowrap;
+    transition: background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+#dufs-effect-switch:hover {
+    background: rgba(255, 255, 255, .26);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(10, 20, 40, .16);
+}
+
+#dufs-effect-switch:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+#dufs-topbar-controls.dufs-topbar--floating #dufs-effect-switch {
+    background: color-mix(in srgb, var(--dufs-surface) 60%, transparent);
+    border-color: color-mix(in srgb, var(--dufs-ink) 18%, transparent);
+    color: var(--dufs-ink);
+}
+
+.dufs-effect-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex: none;
+    background: rgba(255, 255, 255, .9);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .22);
+}
+
+#dufs-effect-toast {
+    position: fixed;
+    top: 108px;
+    right: 20px;
+    z-index: 2601;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, .3);
+    background: color-mix(in srgb, var(--dufs-surface) 86%, transparent);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    color: var(--dufs-ink);
+    font: 500 12px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity .22s ease, transform .22s ease;
+}
+
+#dufs-effect-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+    #dufs-effect-switch { height: 30px; padding: 0 9px; }
+    #dufs-effect-switch .dufs-effect-label { display: none; }
+    #dufs-effect-toast { top: 96px; right: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #dufs-effect-switch,
+    #dufs-effect-toast { transition: none; }
+}

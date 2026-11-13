@@ -21,17 +21,16 @@ log-file: '/data/logs/dufs.log'
 # 目录列表中隐藏路径，例如 tmp,*.log,*.lock
 hidden:
   - 'logs'
+  - 'myself'
 
-# 添加设置功能认证角色
-ui-settings-users:
-  - dustin
-  - lycan
+# 外观设置（主题、天气粒子、背景、透明度）已改为纯前端实现，
+# 保存在每个浏览器的 localStorage 中，不再需要后端设置接口。
 
 # 添加认证角色
 auth:
   - dustin:dustin@/:rw
   - lycan:wzm@/:rw
-  - jmt:jmt@/jmt:rw
+  - jmt:jmt@/jmt:rw,/backup:rw
   - admin:admin@/temps:rw
   - '@/'
 
